@@ -1,65 +1,65 @@
 #include <bits/stdc++.h>
 #include "werewolf.h"
-
+ 
 using namespace std;
-
+ 
 const int MAXL = 20;
 const int INF = 1e9;
 const int MAXN = 4e5 + 5;
-
+ 
 class FenwickTree
 {
 	public:
-
+ 
 		FenwickTree(int _n = MAXN - 1) {
 			n = _n;
 			for (int i = 0; i <= n; i++) {
 				bit[i] = 0;
 			}
 		}
-
+ 
 		void update(int x, int val) {
 			for (; x <= n; x += x & -x)
 				bit[x] += val;
 		}
-
+ 
 		int query(int x) {
 			int ans = 0;
 			for (; x > 0; x -= x & -x) 
 				ans += bit[x];
 			return ans;
 		}
-
+ 
 	private:
-
+ 
 		int n;
-
+ 
 		int bit[MAXN];
-
+ 
 } bit;
-
+ 
 class KRT
 {
 	public:
-
+ 
 		KRT(int _n = 0): n(_n) {
 			curTimer = 0;
 			for (int i = 1; i <= n; i++) {
 				p[i] = i;
 			}
 		}
-
+ 
 		void init(int _n) {
 			n = _n;
 			for (int i = 1; i <= n; i++) {
 				p[i] = i;
 			}
 		}
-
+ 
 		int getTin(int v) { return tin[v]; }
 		int getTout(int v) { return tout[v]; }
 		int getRoot(int v) { return p[v] == v ? v : p[v] = getRoot(p[v]); }
-
+ 
 		void addEdge(int v, int u, int w, int flag) {
 			v = getRoot(v);
 			u = getRoot(u);
@@ -69,9 +69,9 @@ class KRT
 			adj[n].push_back(v);
 			adj[n].push_back(u);
 			anc[v][0] = anc[u][0] = {n, w};
-			anc[n][0] = make_pair(n, (flag ? 0 : INF));
+            anc[n][0] = make_pair(n, (flag ? 0 : INF));
 		}
-
+ 
 		void dfs(int cur) {
 			tin[cur] = ++curTimer;
 			for (int viz : adj[cur]) {
@@ -79,11 +79,11 @@ class KRT
 			}
 			tout[cur] = curTimer;
 		}
-
+ 
 		int get(int a, int b, int flag) {
 			return flag ? max(a, b) : min(a, b);
 		}
-
+ 
 		void buildKRT(int flag) {
 			for (int d = 1; d < MAXL; d++) {
 				for (int i = 1; i <= n; i++) {
@@ -94,11 +94,11 @@ class KRT
 			}
 			dfs(n);
 		}
-
+ 
 		bool compare(int limit, int value, int flag) {
 			return flag ? limit >= value : limit <= value;
 		}
-
+ 
 		int goUp(int v, int limit, int flag) {
 			for (int j = MAXL - 1; j >= 0; j--) {
 				if (compare(limit, anc[v][j].second, flag)) {
@@ -107,38 +107,38 @@ class KRT
 			}
 			return v;
 		}
-
+ 
 	private:
-
+ 
 		int n;
 		int curLen;
 		int curTimer;
-
+ 
 		int p[MAXN];
 		int tin[MAXN];
 		int tout[MAXN];
-
+ 
 		vector<int> adj[MAXN];
-
+ 
 		pair<int, int> anc[MAXN][MAXL];
-
+ 
 } krtMin, krtMax;
-
+ 
 struct Event
 {
 	int tipo, idx;
 	int x, y;
-
+ 
 	Event() {}
-
+ 
 	Event(int _t, int _i, int _x, int _y): tipo(_t), idx(_i), x(_x), y(_y) {}
-
+ 
 	bool operator <(const Event &e) const {
 		if (x == e.x) return tipo < e.tipo;
 		return x < e.x;
 	}
 };
-
+ 
 vector<int> check_validity(int N, vector<int> X, vector<int> Y, vector<int> S, vector<int> E, vector<int> L, vector<int> R) {
 	int n = N;
 	krtMin.init(n);
@@ -153,7 +153,7 @@ vector<int> check_validity(int N, vector<int> X, vector<int> Y, vector<int> S, v
 	for (int i : {0, 1}) {
 		sort(edges[i].begin(), edges[i].end());
 	}
-	reverse(edges[0].begin(), edges[0].end());
+    reverse(edges[0].begin(), edges[0].end());
 	for (int i = 0; i < m; i++) {
 		int w = edges[0][i].first;
 		int v = edges[0][i].second.first;
@@ -202,4 +202,5 @@ vector<int> check_validity(int N, vector<int> X, vector<int> Y, vector<int> S, v
 	for (int& x : ans) {
 		x = !!x;
 	}
-	r
+	return ans;
+}
